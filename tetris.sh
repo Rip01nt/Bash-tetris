@@ -6,7 +6,7 @@ trap '' SIGUSR1 SIGUSR2
 # Those are commands sent to controller by key press processing code
 # In controller they are used as index to retrieve actual functuon from array
 QUIT=0
-RIGHT=1
+RIGHT=3
 LEFT=2
 ROTATE=1
 DOWN=4
@@ -55,7 +55,7 @@ GAMEOVER_Y=$((PLAYFIELD_H + 3))
 # Intervals after which game level (and game speed) is increased 
 LEVEL_UP=20
 
-colors=("$RED $GREEN $YELLOW $BLUE $FUCHSIA $CYAN $WHITE")
+colors=("$RED" "$GREEN" "$YELLOW" "$BLUE" "$FUCHSIA" "$CYAN" "$WHITE")
 
 no_color=true    # do we use color or not
 showtime=true    # controller runs while this flag is true
@@ -176,7 +176,6 @@ toggle_help() {
         ((help_on == 1)) && s="${help[i]}" || s="${help[i]//?/ }"
         xyprint $HELP_X $((HELP_Y + i)) "$s"
     }
-    ((help_on = -help_on))
     reset_colors
 }
 
@@ -225,11 +224,11 @@ clear_next() {
 }
 
 show_next() {
-    return
     set_fg $next_piece_color
     set_bg $next_piece_color
     draw_next "${filled_cell}"
     reset_colors
+    return
 }
 
 toggle_next() {
@@ -286,7 +285,7 @@ get_random_next() {
     # now let's get next piece
     ((next_piece = RANDOM % ${#piece[@]}))
     ((next_piece_rotation = RANDOM % (${#piece[$next_piece]} / 8)))
-    ((next_piece_color = RANDOM % ${#colors[@]}))
+    ((next_piece_color = ${colors[RANDOM % ${#colors[@]}]}))# # ce n'est pas un résultat dépendant de array, mais de sa size
     show_next
 }
 
